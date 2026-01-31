@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - uses: actions/checkout@v6 #Получаем код репозитория
+    - uses: actions/setup-go@v6 #Настраиваем Go
+      with:
+       go-version: '>=1.25.5'
+       cache: false
+    - run: go version 
+
+    - name: Cache Go modules #Кэшируем зависимости
+      id: go-cache
+      uses: actions/cache@v5
+      with:
+        path: |
+          $GOPATH/pkg/mod
+          $GOCACHE
+        key: ${{ runner.os }}-go-modules-${{ hashFiles('**/go.sum') }}
+
+    - name: Install dependencies #Устанавливаем зависимости если кэш не сработал
+      if: steps.go-cache.outputs.cache-hit != 'true'
+      run: go mod download
+
+    - name: Build #Собираем проект
+      run: go build -v ./...
+
+    - name: Run tests #Запускаем тесты
+      run: go test -v -race ./...
+
+    - name: Run golangci-lint #Запускаем линтер
+      uses: golangci/golangci-lint-action@v9
+      with:
+        version: v2.6.0
+        args: run
+
+

@@ -1,0 +1,25 @@
+version: 2
+
+linters:
+  enable:
+    - errcheck      # проверка использования ошибок
+    - govet         # базовые проверки Go
+    - ineffassign   # неэффективные присваивания
+    - staticcheck   # продвинутые проверки кода
+    - unused        # неиспользуемые переменные/функции
+
+formatters:
+  enable:
+    - gofmt         # стандартное форматирование Go
+    - goimports     # форматирование + исправление импортов
+
+output:
+  format: colored-line-numbered  # цветной вывод с номерами строк
+  color: true                     # включить цвет
+
+run:
+  timeout: 5m      # максимум времени работы линтера
+  tests: true      # проверять файлы с тестами
+  skip-dirs:
+    - vendor       # пропускать папку vendor
+    - mocks        # пропускать папку mocks
