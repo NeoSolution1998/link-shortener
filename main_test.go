@@ -18,7 +18,7 @@ func TestPingRoute(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code, "Ожидался статус 200 OK")
-	assert.Equal(t, "po ng", w.Body.String(), "Ожидалось тело ответа 'pong'")
+	assert.Equal(t, "pong", w.Body.String(), "Ожидалось тело ответа 'pong'")
 }
 
 func TestRecoveryMiddleware(t *testing.T) {
